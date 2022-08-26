@@ -5,11 +5,11 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:${VARIANT}
 RUN wget -qO- https://apt.kitware.com/kitware-archive.sh | sh
 
 RUN apt update \
-    && apt -y install --no-install-recommends gzip ninja-build gpg wget cmake \
+    && apt -y install --no-install-recommends ninja-build wget cmake xz-utils \
     && apt clean -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install GCC
 WORKDIR /work
-RUN wget -qO- https://developer.arm.com/-/media/Files/downloads/gnu/11.3.rel1/binrel/arm-gnu-toolchain-11.3.rel1-x86_64-arm-none-eabi.tar.xz | tar -xz
+RUN wget -qO- https://developer.arm.com/-/media/Files/downloads/gnu/11.3.rel1/binrel/arm-gnu-toolchain-11.3.rel1-x86_64-arm-none-eabi.tar.xz | tar -xJ
 ENV PATH $PATH:/work/arm-gnu-toolchain-11.3.rel1-x86_64-arm-none-eabi/bin
