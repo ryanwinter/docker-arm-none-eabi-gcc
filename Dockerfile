@@ -1,11 +1,15 @@
-ARG VARIANT=buster
+ARG VARIANT=ubuntu
 FROM mcr.microsoft.com/vscode/devcontainers/base:${VARIANT}
 
-RUN apt-get update \
-    && apt-get -y install --no-install-recommends bzip2 cmake ninja-build \
-    && apt-get clean -y \
+# Install cmake repository
+RUN wget -qO- https://apt.kitware.com/kitware-archive.sh | sh
+
+RUN apt update \
+    && apt -y install --no-install-recommends gzip ninja-build gpg wget cmake \
+    && apt clean -y \
     && rm -rf /var/lib/apt/lists/*
 
+# Install GCC
 WORKDIR /work
-RUN wget -qO- https://developer.arm.com/-/media/Files/downloads/gnu-rm/10-2020q4/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2 | tar -xj
-ENV PATH $PATH:/work/gcc-arm-none-eabi-10-2020-q4-major/bin
+RUN wget -qO- https://developer.arm.com/-/media/Files/downloads/gnu/11.3.rel1/binrel/arm-gnu-toolchain-11.3.rel1-x86_64-arm-none-eabi.tar.xz | tar -xz
+ENV PATH $PATH:/work/arm-gnu-toolchain-11.3.rel1-x86_64-arm-none-eabi/bin
